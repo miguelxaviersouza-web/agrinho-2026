@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Agro-Verde | Agrinho 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <nav class="navbar">
+        <div class="nav-logo">🌾 Missão Agro-Verde</div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" id="btn-simulador" onclick="switchPage('simulador')">🎮 O Simulador</button>
+            <button class="nav-btn" id="btn-sobre" onclick="switchPage('sobre-mim')">👤 Sobre Mim</button>
+            <button class="nav-btn" id="btn-concurso" onclick="switchPage('concurso')">🏆 Agrinho 2026</button>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <section id="page-simulador" class="page-content active">
+            <div class="game-card">
+                <div class="game-header">
+                    <h2>Gestão da Fazenda Sustentável</h2>
+                    <p>Tome decisões estratégicas para equilibrar suas finanças e proteger o meio ambiente.</p>
+                </div>
+
+                <div class="dashboard">
+                    <div class="stat-box">
+                        <span class="stat-icon">💰</span>
+                        <div class="stat-info">
+                            <span class="stat-label">Capital Atual</span>
+                            <span class="stat-value" id="val-money">R$ 1.500</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-icon">🌱</span>
+                        <div class="stat-info">
+                            <span class="stat-label">Sustentabilidade</span>
+                            <span class="stat-value" id="val-eco">100%</span>
+                            <div class="progress-bar"><div id="bar-eco" class="progress-fill" style="width: 100%;"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-box" id="bee-card">
+                        <span class="stat-icon" id="bee-icon">🐝</span>
+                        <div class="stat-info">
+                            <span class="stat-label">Biodiversidade</span>
+                            <span class="stat-value" id="val-bees">Abelhas Ativas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-container">
+                    <p id="story-text" class="story-text">
+                        Bem-vindo ao comando da Fazenda Modelo! É o início da safra e uma forte infestação de lagartas ameaça destruir metade da sua plantação de soja. Os compradores estão pressionando por resultados. Qual será sua primeira medida?
+                    </p>
+                </div>
+
+                <div id="action-panel" class="action-panel">
+                    </div>
+            </div>
+        </section>
+
+        <section id="page-sobre-mim" class="page-content">
+            <div class="info-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder">👨‍💻</div>
+                    <div>
+                        <h2>Desenvolvido por um Jovem Inovador</h2>
+                        <p>Aluno do 1º Ano do Ensino Médio</p>
+                    </div>
+                </div>
+                <hr>
+                <p>Olá! Sou estudante do 1º ano do Ensino Médio e desenvolvi o projeto <strong>"Missão Agro-Verde"</strong> combinando lógica de programação e estudos de impacto ambiental.</p>
+                <p>Acredito firmemente que a tecnologia e a <strong>gamificação</strong> são as melhores ferramentas para conectar a juventude urbana e rural às práticas reais de sustentabilidade. Entender que cada ação no campo gera uma reação direta na nossa biodiversidade é o primeiro passo para garantir um futuro próspero.</p>
+            </div>
+        </section>
+
+        <section id="page-concurso" class="page-content">
+            <div class="info-card">
+                <div class="badge-agrinho">Agrinho 2026</div>
+                <h2>O Concurso e o Tema</h2>
+                <p class="theme-highlight">"AGRO FORTE, FUTURO SUSTENTÁVEL: EQUILÍBRIO ENTRE PRODUÇÃO E MEIO AMBIENTE"</p>
+                
+                <p>O Programa Agrinho é uma iniciativa fundamental que desafia a comunidade escolar a pensar de forma crítica e prática sobre a realidade do nosso ecossistema produtivo.</p>
+                <p>Este simulador foi projetado alinhado perfeitamente com a proposta de 2026: ele prova, por meio da simulação matemática e biológica, que o esgotamento dos recursos naturais destrói a própria capacidade de lucro do agro a longo prazo, consagrando o manejo consciente como o único caminho viável.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Missão Agro-Verde - Projeto Escolar para o Concurso Agrinho.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
