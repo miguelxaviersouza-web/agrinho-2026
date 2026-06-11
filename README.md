@@ -17,9 +17,9 @@ Mecânica de Causa e Efeito (O Diferencial das Abelhas): Caso o jogador escolha 
 Relatório Final: Ao término das rodadas, a inteligência do código calcula os resultados e emite um veredito sobre a gestão do jogador (Sucesso Sustentável, Produção Moderada ou Colapso Ecológico).
 
 2. 👤 Sobre Mim
-Uma seção biográfica dedicada a apresentar o autor do projeto (aluno do 1º ano do Ensino Médio), destacando o uso da tecnologia e da programação como ferramentas de conscientização ambiental e social.
+Sou um aluno do 1º Ano do Ensino Médio, estudante do Colégio Estadual Coronel Costa Neto e um participante do Agrinho 2026.
 
-3. 🏆 Agrinho 2026
+4. 🏆 Agrinho 2026
 Uma página institucional que contextualiza as diretrizes do concurso e defende a tese do projeto: provar cientificamente e matematicamente, através do código, que o manejo consciente é o único caminho viável para um agro forte no futuro.
 
 🛠️ Tecnologias Utilizadas
