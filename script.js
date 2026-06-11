@@ -1,172 +1,206 @@
-// Navegação Básica entre abas
+// Gerenciador de Abas / Páginas
 function switchPage(pageName) {
-    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
 
     document.getElementById(`page-${pageName}`).classList.add('active');
     
-    let activeId = 'btn-simulador';
-    if(pageName === 'sobre-mim') activeId = 'btn-sobre';
-    if(pageName === 'concurso') activeId = 'btn-concurso';
-    document.getElementById(activeId).classList.add('active');
+    let btnId = 'btn-simulador';
+    if(pageName === 'sobre-mim') btnId = 'btn-sobre';
+    if(pageName === 'concurso') btnId = 'btn-concurso';
+    document.getElementById(btnId).classList.add('active');
 }
 
-// Estados Gerais do RPG
-let stage = 1;
-let money = 1500;
-let eco = 100;
-let bees = true;
+// ESTADOS DO RPG (Mecânicas Ativas)
+let currentStage = 1;
+let stats = {
+    money: 1500,
+    eco: 100,
+    beesAlive: true
+};
 
-// Capturas do DOM
-const txtMoney = document.getElementById('val-money');
-const txtEco = document.getElementById('val-eco');
+// Elementos Gráficos e de Texto do Sistema
+const valMoney = document.getElementById('val-money');
+const valEco = document.getElementById('val-eco');
 const barEco = document.getElementById('bar-eco');
+const valBees = document.getElementById('val-bees');
 const storyText = document.getElementById('story-text');
 const actionPanel = document.getElementById('action-panel');
-const stageTxt = document.getElementById('stage-txt');
+const questStage = document.getElementById('quest-stage');
 
-// Elementos Gráficos 2D do Cenário
+// Elementos da Tela Visual 2D
 const cropField = document.getElementById('crop-field');
 const beeSwarm = document.getElementById('bee-swarm');
-const fieldAlert = document.getElementById('field-alert');
+const mapAlert = document.getElementById('map-alert');
 
-function updateUI() {
-    txtMoney.innerText = `R$ ${money}`;
-    txtEco.innerText = `${eco}%`;
-    barEco.style.width = `${eco}%`;
+// Renderiza os painéis numéricos e atualiza o cenário visual 2D
+function renderDashboard() {
+    valMoney.innerText = `R$ ${stats.money}`;
+    valEco.innerText = `${stats.eco}%`;
+    barEco.style.width = `${stats.eco}%`;
 
-    // Atualização Gráfica do Cenário com base nos acontecimentos
-    if (!bees) {
-        beeSwarm.style.opacity = "0"; // Abelhas somem da tela!
+    // Atualiza a barra de ECO-HP com cores de jogos clássicos
+    if(stats.eco <= 40) {
+        barEco.style.backgroundColor = 'var(--pixel-red)';
+    } else if (stats.eco <= 70) {
+        barEco.style.backgroundColor = 'var(--pixel-gold)';
     } else {
+        barEco.style.backgroundColor = 'var(--pixel-green)';
+    }
+
+    // CONTROLE VISUAL 2D: Reação imediata no cenário
+    if (!stats.beesAlive) {
+        valBees.innerText = "❌ Extintas";
+        valBees.style.color = "var(--pixel-red)";
+        beeSwarm.style.opacity = "0"; // AS ABELHAS SOMEM DA TELA DO JOGO!
+    } else {
+        valBees.innerText = "🐝 Ativas";
+        valBees.style.color = "var(--pixel-green)";
         beeSwarm.style.opacity = "1";
     }
-
-    if (eco < 50) {
-        barEco.style.backgroundColor = "var(--danger)";
-    } else {
-        barEco.style.backgroundColor = "var(--primary-light)";
-    }
 }
 
-function processChoice(option) {
-    if (stage === 1) {
-        stageTxt.innerText = "Fase 2/3: Floração";
-        if (option === 'quimico') {
-            money += 700;
-            eco -= 50;
-            bees = false;
+// Sistema de Turnos do RPG
+function playTurn(choice) {
+    if (currentStage === 1) {
+        questStage.innerText = "MISSÃO: Fase 2 de 3";
+        mapAlert.style.display = "none"; // Remove o aviso de praga antiga
+
+        if (choice === 'A') {
+            stats.money += 800; // Ouro imediato
+            stats.eco -= 50;    // Dano massivo na barra de vida do solo
+            stats.beesAlive = false; // Morte das polinizadoras
             
-            fieldAlert.innerText = "⚠️ Sem Abelhas!";
-            fieldAlert.className = "field-alert alert-danger";
-            cropField.innerHTML = "🌿🌿🌿<br>🌿🌿🌿"; // Plantas crescem sem flores abundantes
-            
-            storyText.innerText = "O químico pesado erradicou as pragas e salvou a colheita inicial. Porém, a névoa tóxica dizimou as colmeias próximas (veja o cenário: as abelhas sumiram). Agora entramos no período de floração. Qual será sua tática nutricional?";
+            cropField.innerHTML = "🌿🌿🌿<br>🌿🌿🌿"; // Folhagem sem flor devido à toxicidade
+            storyText.innerText = "⚠️ CONSEQÜÊNCIA: O veneno químico pesado dizimou as pragas rapidamente e garantiu lucro rápido, mas causou um desastre biológico nas redondezas. Note a tela: as abelhas sumiram da sua propriedade! Agora é época de floração. Como nutrirá a lavoura?";
         } else {
-            money += 200;
-            // Eco se mantém estável
-            fieldAlert.innerText = "🐝 Polinização Ativa!";
-            cropField.innerHTML = "🌸🌸🌸<br>🌸🌸🌸"; // Campo floresce lindo
-            
-            storyText.innerText = "O controle biológico levou mais dias, mas protegeu os insetos nativos. Seu campo agora está florido e zumbindo cheio de abelhas ativas! Chegou o momento crítico de nutrir o solo para a geração dos grãos.";
+            stats.money += 300; 
+            // Eco mantido estável
+            cropField.innerHTML = "🌸🌸🌸<br>🌸🌸🌸"; // Campo floresce de forma saudável
+            storyText.innerText = "🌱 CONSEQÜÊNCIA: Excelente! O uso de vespas predadoras realizou o controle biológico natural. Demorou um pouco mais e lucrou menos de início, mas a fauna nativa foi poupada. Veja na tela: seu campo floresceu e está cercado de abelhas. Como nutrirá a lavoura agora?";
         }
-        stage = 2;
-        updateUI();
-        loadStage2();
-    } 
-    else if (stage === 2) {
-        stageTxt.innerText = "Fase 3/3: Resultados";
-        fieldAlert.style.display = "none"; // Remove alertas provisórios
         
-        if (option === 'sintetico') {
-            money += 300;
-            eco -= 20;
-            if (!bees) {
-                money -= 800; // Penalidade extrema: sem abelhas a flor cai e não gera vagem
-                cropField.innerHTML = "🍂 🍂 🍂<br>🍂 🍂 🍂"; // Cenário seco/morto
-                storyText.innerText = "Balanço: Você aplicou fertilizantes químicos de rápida absorção. Contudo, como as abelhas foram extintas na primeira fase, não houve polinização cruzada. Suas flores caíram e a safra gerou grãos chochos e sem valor de mercado.";
+        currentStage = 2;
+        renderDashboard();
+        setStageChoices();
+        
+    } else if (currentStage === 2) {
+        questStage.innerText = "MISSÃO: Fim de Jogo";
+        
+        if (choice === 'A') {
+            stats.money += 400;
+            stats.eco -= 20;
+            
+            if(!stats.beesAlive) {
+                stats.money -= 700; // Penalidade fatal
+                cropField.innerHTML = "🍂 🍂 🍂<br>🍂 🍂 🍂"; // Plantas murcham sem fruto
+                storyText.innerText = "💔 DERROTA: Você aplicou fertilizantes solúveis artificiais agressivos. Porém, como suas abelhas foram extintas na Fase 1, as flores não foram polinizadas! A lavoura secou produzindo vagens sem sementes. O ouro investido virou prejuízo crítico.";
             } else {
-                cropField.innerHTML = "🌾🌾🌾<br>🌾🌾🌾"; // Safra mediana normal
-                storyText.innerText = "Balanço: Os minerais funcionaram, mas o excesso de salinização do solo reduziu o potencial máximo. Sua safra foi mediana, comercializada a preços normais de tabela.";
+                cropField.innerHTML = "🌾🌾🌾<br>🌾🌾🌾"; // Colheita padrão
+                storyText.innerText = "⚖️ BALANÇO: Os minerais funcionaram, mas a alta salinização do solo causou perda parcial de vitalidade da terra. Suas abelhas remanescentes ajudaram a salvar o faturamento, garantindo uma safra comercial regular padrão.";
             }
         } else {
-            // Opção Orgânica
-            if (!bees) {
-                money -= 400; // Prejuízo moderado pela falta de polinizadores
+            // Opção orgânica e integrada
+            if(!stats.beesAlive) {
+                stats.money -= 300; 
                 cropField.innerHTML = "🌱 🌿 🌱<br>🌿 🌱 🌿";
-                storyText.innerText = "Balanço: Você optou pela adubação verde. O solo ficou rico, mas sem as abelhas para polinizar, a taxa de frutificação foi muito baixa. O ecossistema está quebrado e a colheita rendeu pouco.";
+                storyText.innerText = "⚠️ MITIGAÇÃO INCOMPLETA: Você escolheu adubação verde orgânica para salvar a terra, mas sem as abelhas para fecundar as flores, a produtividade final despencou. O ecossistema desequilibrado quebrou a colheita.";
             } else {
-                money += 1000; // Bônus perfeito
-                eco = Math.min(eco + 20, 100);
-                cropField.innerHTML = "💰🌾💰<br>🌾💰🌾"; // Campo dourado de alta produtividade
-                storyText.innerText = "Balanço Perfeito! Ao somar adubação verde com o trabalho massivo das abelhas que você preservou, sua fazenda bateu recordes de produtividade sustentável, ganhando selo de Exportação Verde!";
+                stats.money += 1000; // Bônus secreto lendário
+                stats.eco = Math.min(stats.eco + 20, 100);
+                cropField.innerHTML = "🌾💰🌾<br>💰🌾💰"; // Plantação brilha com ouro!
+                storyText.innerText = "👑 VITÓRIA LENDÁRIA! Perfeito, fazendeiro sustentável! Combinando a rica adubação verde com o trabalho incansável de polinização das abelhas vivas que você protegeu, sua produtividade quebrou recordes, gerando grãos premium e lucro máximo!";
             }
         }
-        stage = 3;
-        updateUI();
-        showEndGame();
+        
+        currentStage = 3;
+        renderDashboard();
+        showFinalResult();
     }
 }
 
-function loadStage2() {
-    actionPanel.innerHTML = `
-        <button class="rpg-btn" onclick="processChoice('sintetico')">A) Adubar com NPK Sintético de Alta Concentração.</button>
-        <button class="rpg-btn" onclick="processChoice('organico')">B) Adotar Adubação Verde e Cobertura Orgânica de Solo.</button>
-    `;
+// Configura botões dinâmicos com design de escolhas de RPG
+function setStageChoices() {
+    actionPanel.innerHTML = "";
+
+    if (currentStage === 2) {
+        const btn1 = document.createElement('button');
+        btn1.className = "pixel-btn";
+        btn1.innerText = "> Opção A: Injetar adubo sintético mineral industrial.";
+        btn1.onclick = () => playTurn('A');
+
+        const btn2 = document.createElement('button');
+        btn2.className = "pixel-btn";
+        btn2.innerText = "> Opção B: Implantar adubação verde com plantas de cobertura.";
+        btn2.onclick = () => playTurn('B');
+
+        actionPanel.appendChild(btn1);
+        actionPanel.appendChild(btn2);
+    }
 }
 
-function showEndGame() {
+// Mostra o encerramento da jornada e o botão de reinício
+function showFinalResult() {
     actionPanel.innerHTML = "";
     
-    const veredito = document.createElement('div');
-    veredito.style.marginTop = "15px";
-    veredito.style.padding = "10px";
-    veredito.style.border = "2px dashed var(--dark-box)";
+    const divResult = document.createElement('div');
+    divResult.style.margin = "10px 0";
+    divResult.style.padding = "10px";
+    divResult.style.border = "3px dashed var(--border-color)";
 
-    if (eco >= 70 && money >= 2200) {
-        veredito.innerHTML = "<h4 style='color:var(--primary)'>🏆 VEREDITO: PRODUTOR SUSTENTÁVEL SUPREMO</h4><p>Você dominou o tema do Agrinho! Mostrou que preservar a natureza traz retornos financeiros superiores.</p>";
-    } else if (!bees || eco < 40) {
-        veredito.innerHTML = "<h4 style='color:var(--danger)'>❌ VEREDITO: FALÊNCIA ECOLÓGICA</h4><p>Seu foco no curto prazo eliminou as abelhas, destruindo a sustentabilidade e os lucros futuros.</p>";
+    if (stats.eco >= 70 && stats.money >= 2200) {
+        divResult.innerHTML = "<h3 style='color:var(--pixel-green)'>[ RANK: S - HERÓI DA TERRA ]</h3><p>Parabéns! Você provou a tese do Agrinho 2026: Produção de ponta andou perfeitamente alinhada ao Meio Ambiente preservado!</p>";
+    } else if (!stats.beesAlive || stats.eco < 50) {
+        divResult.innerHTML = "<h3 style='color:var(--pixel-red)'>[ RANK: F - COLAPSO ECOLÓGICO ]</h3><p>Fim de Jogo. O foco ganancioso em dinheiro rápido erradicou as abelhas e sabotou sua própria capacidade de colheita futura.</p>";
     } else {
-        veredito.innerHTML = "<h4 style='color:var(--warning)'>⚠️ VEREDITO: PRODUTOR TRADICIONAL</h4><p>A fazenda pagou as contas, mas o solo perdeu vitalidade e o ecossistema está fragilizado.</p>";
+        divResult.innerHTML = "<h3 style='color:var(--pixel-gold)'>[ RANK: C - PRODUTOR COMUM ]</h3><p>Você sobreviveu às despesas, mas sua fazenda opera no limite ecológico, com solo empobrecido e sem bônus biológicos.</p>";
     }
 
     const resetBtn = document.createElement('button');
-    resetBtn.className = "rpg-btn";
-    resetBtn.style.background = "var(--warning)";
-    resetBtn.style.marginTop = "15px";
-    resetBtn.innerText = "🔄 Reiniciar Aventura RPG";
-    resetBtn.onclick = restartGame;
+    resetBtn.className = "pixel-btn";
+    resetBtn.style.borderColor = "var(--pixel-gold)";
+    resetBtn.style.color = "var(--pixel-gold)";
+    resetBtn.innerText = "[ VOLTAR AO INÍCIO DA JORNADA ]";
+    resetBtn.onclick = resetGame;
 
-    actionPanel.appendChild(veredito);
+    actionPanel.appendChild(divResult);
     actionPanel.appendChild(resetBtn);
 }
 
-function restartGame() {
-    stage = 1;
-    money = 1500;
-    eco = 100;
-    bees = true;
+// Reseta o jogo para o Turno Inicial
+function resetGame() {
+    currentStage = 1;
+    stats.money = 1500;
+    stats.eco = 100;
+    stats.beesAlive = true;
     
-    stageTxt.innerText = "Fase 1/3: A Ameaça";
-    fieldAlert.style.display = "block";
-    fieldAlert.innerText = "🐛 Praga Detectada!";
-    fieldAlert.className = "field-alert alert-warning";
+    questStage.innerText = "MISSÃO: Fase 1 de 3";
+    mapAlert.style.display = "block";
     cropField.innerHTML = "🌱🌱🌱<br>🌱🌱🌱";
-    storyText.innerText = "Uma forte infestação de lagartas atacou o setor sul da plantação. Se não agirmos rápido, perderemos metade do faturamento da temporada!";
+    storyText.innerText = "Bem-vindo ao comando da Fazenda Modelo, herói! É o início da safra e uma feroz infestação de lagartas invadiu o mapa e ameaça destruir nossa plantação de soja. Os mercados estão exigindo resultados urgentes. Qual será sua ação?";
     
-    updateUI();
+    renderDashboard();
     initGame();
 }
 
 function initGame() {
-    actionPanel.innerHTML = `
-        <button class="rpg-btn" onclick="processChoice('quimico')">A) Pulverizar Inseticida Químico Sistêmico Forte.</button>
-        <button class="rpg-btn" onclick="processChoice('biologico')">B) Introduzir Inimigos Naturais (Controle Biológico).</button>
-    `;
+    actionPanel.innerHTML = "";
+    
+    const btn1 = document.createElement('button');
+    btn1.className = "pixel-btn";
+    btn1.innerText = "> Opção A: Aplicar inseticida químico pesado em toda a área.";
+    btn1.onclick = () => playTurn('A');
+
+    const btn2 = document.createElement('button');
+    btn2.className = "pixel-btn";
+    btn2.innerText = "> Opção B: Introduzir controle biológico com vespas predadoras.";
+    btn2.onclick = () => playTurn('B');
+
+    actionPanel.appendChild(btn1);
+    actionPanel.appendChild(btn2);
 }
 
 window.onload = () => {
-    updateUI();
+    renderDashboard();
     initGame();
 };
