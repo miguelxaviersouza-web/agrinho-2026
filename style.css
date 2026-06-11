@@ -1,262 +1,282 @@
-/* Custom Pixel/RPG Style */
+/* Estética RPG Retro / Pixel 2D */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Courier New', Courier, monospace, sans-serif; /* Tom estilo jogo retrô */
+    font-family: 'Courier New', Courier, monospace; /* Fonte estilo Terminal/Retro */
 }
 
 :root {
-    --primary: #1b5e20;
-    --primary-light: #4caf50;
-    --sky: #81d4fa;
-    --dirt: #795548;
-    --grass: #43a047;
-    --dark-box: #212121;
-    --danger: #e53935;
-    --warning: #ffb300;
+    --window-bg: #11161b;
+    --border-color: #3b4854;
+    --pixel-green: #38b764;
+    --pixel-red: #ef7d57;
+    --pixel-gold: #f4b41b;
+    --pixel-sky: #73bed3;
+    --pixel-grass: #a2d149;
+    --pixel-dirt: #855743;
 }
 
 body {
-    background-color: #e0e0e0;
-    color: #333;
+    background-color: #212932;
+    color: #f3f3f3;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* Navbar Premium */
+/* Navbar estilo Menu de Itens */
 .navbar {
-    background-color: var(--primary);
-    color: white;
+    background-color: var(--window-bg);
+    border-bottom: 4px solid #000;
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 4px solid var(--dark-box);
 }
 
 .nav-logo {
-    font-size: 1.2rem;
     font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--pixel-green);
+    text-shadow: 2px 2px #000;
 }
 
-.version {
+.version-tag {
     font-size: 0.7rem;
-    background: var(--warning);
-    color: black;
+    background: var(--pixel-gold);
+    color: #000;
     padding: 2px 6px;
-    border-radius: 4px;
+    margin-left: 5px;
+    font-weight: bold;
 }
 
 .nav-buttons { display: flex; gap: 8px; }
 
 .nav-btn {
-    background: #2e7d32;
-    border: 2px solid var(--dark-box);
-    color: white;
-    padding: 6px 14px;
+    background: #1d262f;
+    border: 3px solid var(--border-color);
+    color: #a3a7ac;
+    padding: 8px 14px;
     cursor: pointer;
     font-weight: bold;
+    transition: 0.1s;
 }
 
-.nav-btn.active {
-    background-color: var(--warning);
-    color: black;
+.nav-btn:hover, .nav-btn.active {
+    border-color: var(--pixel-green);
+    color: white;
+    background: var(--window-bg);
 }
 
-/* Container do Layout Split */
+/* Layout Geral */
 .container {
     flex: 1;
     max-width: 1100px;
     width: 100%;
-    margin: 20px auto;
+    margin: 25px auto;
     padding: 0 15px;
 }
 
 .page-content { display: none; }
 .page-content.active { display: block; }
 
-/* Grid do RPG */
-.game-grid {
+/* Grid de duas colunas do RPG */
+.game-layout {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 20px;
 }
 
 @media(max-width: 768px) {
-    .game-grid { grid-template-columns: 1fr; }
+    .game-layout { grid-template-columns: 1fr; }
 }
 
-/* Cenário Visual RPG (A Tela) */
-.canvas-container {
-    border: 4px solid var(--dark-box);
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--sky);
+/* Moldura e Janela Gráfica 2D */
+.canvas-wrapper {
+    border: 4px solid #000;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+    border-radius: 4px;
+    background: var(--window-bg);
 }
 
-.rpg-screen {
+.rpg-canvas {
     height: 320px;
     position: relative;
-    background: linear-gradient(to bottom, var(--sky) 70%, var(--grass) 70%, var(--dirt) 90%);
+    background: linear-gradient(to bottom, var(--pixel-sky) 65%, var(--pixel-grass) 65%, var(--pixel-dirt) 85%);
     overflow: hidden;
+    image-rendering: pixelated; /* Garante que os emojis/bordas não fiquem borrados */
 }
 
-/* Elementos do Cenário */
-.cloud { position: absolute; font-size: 2.5rem; opacity: 0.5; }
-.c1 { top: 20px; animation: floatClouds 25s infinite linear; }
-.c2 { top: 60px; animation: floatClouds 18s infinite linear reverse; }
+/* Elementos Animados da Tela 2D */
+.cloud { position: absolute; font-size: 2.2rem; opacity: 0.6; }
+.c1 { top: 15px; animation: moveCloud 30s infinite linear; }
+.c2 { top: 50px; animation: moveCloud 20s infinite linear reverse; }
 
 .sun {
     position: absolute;
-    right: 30px;
-    top: 20px;
-    font-size: 3rem;
-    animation: pulseSun 4s infinite alternate;
+    right: 25px;
+    top: 15px;
+    font-size: 2.5rem;
+    animation: sunPulse 3s infinite alternate;
 }
 
-.farm-house {
-    position: absolute;
-    left: 20px;
-    bottom: 80px;
-    font-size: 3.5rem;
-    z-index: 2;
-}
+.scenery { position: absolute; width: 100%; bottom: 0; height: 120px; }
+
+.farm-house { position: absolute; left: 20px; bottom: 35px; font-size: 3.2rem; }
 
 .crop-field {
     position: absolute;
-    right: 40px;
-    bottom: 60px;
-    font-size: 2rem;
+    right: 35px;
+    bottom: 25px;
+    font-size: 1.8rem;
     line-height: 1.2;
-    background: rgba(121, 85, 72, 0.6);
-    padding: 10px;
-    border-radius: 8px;
-    border: 2px dashed #5d4037;
-    transition: all 0.5s;
+    background: rgba(0,0,0,0.15);
+    padding: 8px;
+    border: 3px dashed #5d4037;
 }
 
 .bee-swarm {
     position: absolute;
-    right: 80px;
-    top: 110px;
-    font-size: 1.2rem;
-    animation: buzz 0.3s infinite alternate;
-    pointer-events: none;
-    transition: opacity 1s;
+    right: 75px;
+    top: -40px;
+    font-size: 1.3rem;
+    animation: beeBuzz 0.2s infinite alternate;
+    transition: opacity 0.8s ease-in-out;
 }
 
-.field-alert {
+.map-alert {
     position: absolute;
-    right: 40px;
-    bottom: 150px;
-    background: white;
-    border: 2px solid var(--dark-box);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    background: #000;
+    color: var(--pixel-gold);
+    border: 2px solid var(--pixel-gold);
+    padding: 6px 12px;
     font-weight: bold;
-    animation: bounceAlert 1s infinite alternate;
+    font-size: 0.8rem;
+    box-shadow: 4px 4px 0 #000;
 }
 
-/* HUD Bar */
-.hud-bar {
-    background: var(--dark-box);
-    color: white;
+/* HUD Panel (Barras de Status) */
+.hud-panel {
+    background: #000;
     padding: 12px;
     display: flex;
     justify-content: space-around;
+    gap: 10px;
+}
+
+.hud-slot {
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
-.mini-bar {
-    background: #555;
-    height: 8px;
-    width: 100px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 5px;
-    border: 1px solid white;
-}
-.mini-fill { background: var(--primary-light); height: 100%; transition: width 0.5s; }
+.hud-title { font-size: 0.65rem; color: #888; margin-bottom: 2px; }
+.hud-value { font-size: 1rem; font-weight: bold; color: #fff; }
 
-/* Caixa de Diálogo à la RPG */
-.rpg-dialog-box {
-    background: white;
-    border: 4px solid var(--dark-box);
-    border-radius: 8px;
+.hp-bar-container {
+    width: 90px;
+    height: 10px;
+    background: #333;
+    border: 2px solid #fff;
+    margin-top: 4px;
+}
+
+.hp-bar-fill {
+    height: 100%;
+    background: var(--pixel-green);
+    transition: width 0.4s ease;
+}
+
+/* Caixa de Diálogo Clássica de RPG */
+.dialogue-box {
+    background: var(--window-bg);
+    border: 4px solid #fff;
+    outline: 4px solid #000;
+    border-radius: 2px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
 }
 
-.character-speaker {
+.speaker-profile {
     display: flex;
     align-items: center;
-    gap: 15px;
-    border-bottom: 2px solid #ccc;
+    gap: 12px;
+    border-bottom: 3px double var(--border-color);
     padding-bottom: 10px;
-    margin-bottom: 15px;
 }
 
-.speaker-avatar {
-    font-size: 2.5rem;
-    background: #eee;
-    padding: 5px;
-    border: 2px solid var(--dark-box);
-    border-radius: 4px;
+.speaker-portrait {
+    font-size: 2.2rem;
+    background: #252f38;
+    border: 3px solid var(--border-color);
+    padding: 4px;
 }
 
-.speaker-info { display: flex; flex-direction: column; }
-.speaker-name { font-weight: bold; color: var(--primary); }
-.stage-indicator { font-size: 0.8rem; color: #666; }
+.speaker-meta { display: flex; flex-direction: column; }
+.speaker-title { font-weight: bold; color: var(--pixel-gold); }
+.quest-log { font-size: 0.75rem; color: #888; }
 
-.dialog-text-container {
+.dialogue-text {
     flex: 1;
-    font-size: 0.95rem;
+    margin: 15px 0;
+    font-size: 0.9rem;
     line-height: 1.5;
-    margin-bottom: 20px;
 }
 
-/* Botões do Painel de Ações */
-.rpg-actions { display: flex; flex-direction: column; gap: 10px; }
+/* Botões de Ação estilo Escolhas de Diálogo */
+.choices-container { display: flex; flex-direction: column; gap: 8px; }
 
-.rpg-btn {
-    background: #f5f5f5;
-    border: 2px solid var(--dark-box);
+.pixel-btn {
+    background: #182026;
+    border: 3px solid var(--border-color);
+    color: #fff;
     padding: 12px;
     text-align: left;
     cursor: pointer;
     font-weight: bold;
-    transition: 0.2s;
+    width: 100%;
+    transition: 0.1s;
 }
-.rpg-btn:hover { background: #e0e0e0; transform: translateX(4px); }
 
-/* Cartas Informativas de Texto */
-.info-card { background: white; border: 4px solid var(--dark-box); border-radius: 8px; padding: 25px; }
-.profile-header { display: flex; align-items: center; gap: 15px; }
-.avatar-placeholder { font-size: 2.5rem; }
-.theme-highlight { background: #e8f5e9; border-left: 4px solid var(--primary-light); padding: 10px; margin: 15px 0; font-weight: bold; }
-.badge-agrinho { background: var(--warning); display: inline-block; padding: 3px 8px; font-weight: bold; margin-bottom: 10px; }
+.pixel-btn:hover {
+    background: #252f38;
+    border-color: var(--pixel-gold);
+    color: var(--pixel-gold);
+    transform: translateX(4px);
+}
 
-.footer { background: var(--dark-box); color: #aaa; text-align: center; padding: 12px; font-size: 0.8rem; margin-top: auto; }
+/* Cards das Outras Páginas */
+.pixel-card {
+    background: var(--window-bg);
+    border: 4px solid var(--border-color);
+    padding: 25px;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.3);
+}
 
-/* Animações CSS */
-@keyframes floatClouds {
-    from { left: -100px; }
+.player-profile { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
+.player-avatar { font-size: 2.5rem; background: #222; padding: 10px; border: 2px solid #fff; }
+.pixel-hr { border: 0; height: 4px; background: var(--border-color); margin: 20px 0; }
+.theme-banner { background: #1a2c20; border-left: 6px solid var(--pixel-green); padding: 10px; font-weight: bold; color: var(--pixel-green); }
+.event-badge { background: var(--pixel-gold); color: #000; font-weight: bold; display: inline-block; padding: 2px 8px; margin-bottom: 5px; }
+.game-footer { background: #000; text-align: center; padding: 12px; font-size: 0.75rem; color: #555; }
+
+/* Animações CSS do Canvas 2D */
+@keyframes moveCloud {
+    from { left: -60px; }
     to { left: 100%; }
 }
-@keyframes pulseSun {
+@keyframes sunPulse {
     from { transform: scale(1); }
-    to { transform: scale(1.1); }
+    to { transform: scale(1.08); }
 }
-@keyframes buzz {
-    from { transform: translateY(0) translateX(0); }
-    to { transform: translateY(-3px) translateX(2px); }
-}
-@keyframes bounceAlert {
+@keyframes beeBuzz {
     from { transform: translateY(0); }
-    to { transform: translateY(-5px); }
+    to { transform: translateY(-4px) translateX(2px); }
 }
